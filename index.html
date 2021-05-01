@@ -27,13 +27,12 @@
 
         body {
             color: #011627;
-            background: pink;
-
+ 
         }
 
         .componentColor {
             background-color: #e71d36;
-         }
+          }
 
         .componentBorder {
             border-style: solid;
@@ -115,13 +114,13 @@
                                 </button>
                                 <ul class="dropdown-menu" id="allColors">
                                     <li><a href="#" value="#e71d36" class="colorOption"
-                                            style="background-color:#e71d36">.</a></li>
+                                            style="color: #ffffff;background-color:#e71d36">.</a></li>
                                     <li><a href="#" value="#ff9f1c" class="colorOption"
-                                            style="background-color:#ff9f1c">. </a></li>
+                                            style="color: #ffffff;background-color:#ff9f1c">. </a></li>
                                     <li><a href="#" value="#2ec4b6" class="colorOption"
-                                            style="background-color:#2ec4b6">. </a></li>
+                                            style="color: #ffffff;background-color:#2ec4b6">. </a></li>
                                     <li><a href="#" value="#011627" class="colorOption"
-                                            style="background-color:#011627">. </a></li>
+                                            style="color: #ffffff;background-color:#011627">. </a></li>
                                 </ul>
                             </div>
                         </div>
@@ -135,13 +134,13 @@
                         <div class="col-sm-6">
                             <div class="dropdown">
                                 <button class="btn dropdown-toggle componentColor" id="chosenActivationFun"
-                                    type="button" data-toggle="dropdown" style="color: #011627;">Tanh
+                                    type="button" data-toggle="dropdown" style="color: #ffffff;">Tanh
                                 </button>
                                 <ul class="dropdown-menu" id="activationFuns">
-                                    <li><a href="#" style="background-color:#e71d36">Tanh</a></li>
-                                    <li><a href="#" style="background-color:#ff9f1c">ReLU</a></li>
-                                    <li><a href="#" style="background-color:#2ec4b6">Leaky ReLU</a></li>
-                                    <li><a href="#" style="background-color:#fdfffc">Sigmoid</a></li>
+                                    <li><a href="#" style="color: #ffffff;background-color:#e71d36">Tanh</a></li>
+                                    <li><a href="#" style="color: #011627;background-color:#ff9f1c">ReLU</a></li>
+                                    <li><a href="#" style="color: #011627;background-color:#2ec4b6">Leaky ReLU</a></li>
+                                    <li><a href="#" style="color: #011627;background-color:#fdfffc">Sigmoid</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -149,7 +148,7 @@
                     <div class="row mt-4">
                         <div class="col-sm-6">learning rate <span id="learningRateValueDis"></span></div>
                         <div class="col-sm-6 slidecontainer">
-                            <input type="range" min="0.005" max="2" value="0.2" step="0.005" class="slider"
+                            <input type="range" min="0.005" max="1" value="0.2" step="0.005" class="slider"
                                 id="learningRateRange" oninput="updateValue('learningRateRange','learningRateValueDis')">
                         </div>
                     </div>
@@ -162,8 +161,11 @@
             </div>
             <div class="col-sm-5">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div id="sketch-container"></div>
+                    <div class="row justify-content-center">
+                        <p id="x-label1">X: </p>
+                        <p id="y-label1">Y: </p>
+                        
+                        <div id="sketch-container1"></div>
 
                       <!--  <div class="col-sm-4" style="background-color:aqua;">as</div>
                         <div class="col-sm-4" style="background-color: black;">sdfs</div>
@@ -173,11 +175,15 @@
             </div>
             <div class="col-sm-4">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-4" style="background-color:aqua;">as</div>
+                    <div class="row justify-content-center">
+                        <p id="x-label1">X: </p>
+                        <p id="y-label1">Y: </p>
+                        <div id="sketch-container2"></div>
+
+                      <!--  <div class="col-sm-4" style="background-color:aqua;">as</div>
                         <div class="col-sm-4" style="background-color: black;">sdfs</div>
                         <div class="col-sm-4" style="background-color: blue;">fsdf</div>
-                    </div>
+                  -->  </div>
                 </div>
             </div>
         </div>
