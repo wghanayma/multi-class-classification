@@ -10,14 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
+
     <link href="/your-path-to-fontawesome/css/fontawesome.css" rel="stylesheet">
     <link href="/your-path-to-fontawesome/css/brands.css" rel="stylesheet">
     <link href="/your-path-to-fontawesome/css/solid.css" rel="stylesheet">
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-    
+
 
     <script src="lib/p5.min.js"></script>
 
@@ -180,12 +180,8 @@
                 <div class="container-fluid">
                     <div class="row justify-content-center componentBorder">
 
-                        <div id="sketch-container1"></div>
+                        <div id="canvasDiv"></div>
 
-                        <!--  <div class="col-sm-4" style="background-color:aqua;">as</div>
-                        <div class="col-sm-4" style="background-color: black;">sdfs</div>
-                        <div class="col-sm-4" style="background-color: blue;">fsdf</div>
-                  -->
                     </div>
                 </div>
             </div>
@@ -234,7 +230,7 @@
         });
     });
 
-    setColor();
+    setColor($('#allColors li a').css("background-color"));
     updateValue('learningRateRange', 'learningRateValueDis');
     updateValue('traningDataRange', 'traningDataValueDis');
     updateValue('iterationRange', 'iterationValueDis');
@@ -243,93 +239,57 @@
 </script>
 
 <script>
-    Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv", function (err, rows) {
+    var trace1 = {
+        x: [0, 1, 2, 3, 10, 5, 6, 7, 8],
+        y: [8, 7, 6, 1, 4, 3, 2, 1, 0],
+        type: 'scatter',
+        name: 'validation',
 
-        function unpack(rows, key) {
-            return rows.map(function (row) { return row[key]; });
-        }
+        fill: 'tozeroy',
+    };
+    var trace2 = {
+        x: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        y: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        name: 'Training ',
 
-        var frames = []
-        var x = unpack(rows, 'AAPL_x')
-        var y = unpack(rows, 'AAPL_y')
+        type: 'scatter',
+        fill: 'tozeroy',
+    };
+    var data = [trace1, trace2,];
+    var layout = {
+        autosize: true,
+        width: 470,
+        height: 470,
+        margin: {
+            l: 120,
+            r: 10,
+            b: 100,
+            t: 100,
+            pad: 4
+        },
 
-        var n = 100;
-        for (var i = 0; i < n; i++) {
-            frames[i] = { data: [{ x: [], y: [] }] }
-            frames[i].data[0].x = x.slice(0, i + 1);
-            frames[i].data[0].y = y.slice(0, i + 1);
-        }
+        xaxis: {
+            autotick: false,
+            ticks: 'outside',
+            tick0: 0,
+            dtick: 10,
+            ticklen: 1000,
+            tickwidth: 0.5,
+            tickcolor: '#000'
+        },
+        yaxis: {
+            autotick: false,
+            ticks: 'outside',
+            tick0: 0,
+            dtick: 0.5,
+            ticklen: 8,
+            tickwidth: 4,
+            tickcolor: '#000'
+        },
+    };
 
-        Plotly.newPlot('myDiv', [{
-            x: frames[1].data[0].x,
-            y: frames[1].data[0].y,
-            fill: 'tozeroy',
-            type: 'scatter',
-            mode: 'lines',
-            line: { color: 'green' }
-        }], {
-            width: 400,
-            height: 400,
-       
-            xaxis: {
-                type: 'date',
-                range: [
-                    frames[99].data[0].x[0],
-                    frames[99].data[0].x[99]
-                ],
-                showgrid: false,
-                showline: false,   
-                showticklabels: false,
-                zeroline: false
-            },
-            yaxis: {
-                range: [
-                    0,
-                    90
-                ],
-                showgrid: false,
-                showline: false,
-                showticklabels: false,
-                zeroline: false
-            },
-            annotations: [{
-                showarrow: false,
-                text: "<b>TESTING</b>",
-                font: {
-                    family: 'Gravitas One',
-                    size: 48,
-                    color: 'white'
-                },
-                xref: 'paper',
-                yref: 'paper',
-                x: 0.5,
-                y: 0.5
-            }, {
-                showarrow: false,
-                text: "testing | testing | testing",
-                font: {
-                    family: 'Gravitas One',
-                    size: 16,
-                    color: 'white'
-                },
-                xref: 'paper',
-                yref: 'paper',
-                x: 0.5,
-                y: 0.35
-            }]
-        }).then(function () {
-            Plotly.animate('myDiv', frames, {
-                transition: {
-                    duration: 0
-                },
-                frame: {
-                    duration: 20,
-                    redraw: false
-                }
-            });
-        });
+    Plotly.newPlot('myDiv', data, layout);
 
-    })
 </script>
 
 </html>
