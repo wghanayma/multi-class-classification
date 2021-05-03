@@ -1,5 +1,5 @@
-var allDataPoints = [], learningRate, activationFun, ratioOftrainingData, numberOfIterations, SSE
-var currentDataColor, canvasWidth, canvasHeight, y1ForLine = 0, y2ForLine = 0, isReady = false
+var allDataPoints = [], learningRate, activationFun, ratioOftrainingData, numberOfIterations, SumSSE = 0,mMSE=0;
+var currentDataColor, canvasWidth, canvasHeight, y1ForLine = 0, y2ForLine = 0, isReady = false, numberOFClasses = 0, classes
 function getRnd(min, max) {
   return (Math.random() + min);
 }
@@ -42,41 +42,114 @@ function activate(type, BigX) {
 }
 
 function train() {
+  SumSSE = 0;
+  numberOFClasses = getNumberOfClasses(allDataPoints);
 
-  var perceptron = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
-  var bigX = 0;
-  var t = 0;
+  if (numberOFClasses == 1 || numberOFClasses == 0) {
+    window.alert("Please add two classes at least");
+  }
+  else if (numberOFClasses == 2) {
+    var colors = getColors(numberOFClasses);
+    var perceptronee = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+    trainPerceptron(perceptronee, colors[0]);
+  }
+  else if (numberOFClasses == 3) {
+    console.log(numberOFClasses);
+    var colors = getColors(numberOFClasses);
+    var perceptronee1 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+    var perceptronee2 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+    var perceptronee3 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+
+    trainPerceptron(perceptronee1, colors[0]);
+    trainPerceptron(perceptronee2, colors[1]);
+    trainPerceptron(perceptronee3, colors[2]);
+  }
+  else if (numberOFClasses == 4) {
+    var colors = getColors(numberOFClasses);
+    var perceptronee1 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+    var perceptronee2 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+    var perceptronee3 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+    var perceptronee4 = new Perceptron([getRnd(-0.5, 0.5), getRnd(-0.5, 0.5)], getRnd(-0.5, 0.5), 0);
+
+    trainPerceptron(perceptronee1, colors[0]);
+    trainPerceptron(perceptronee2, colors[1]);
+    trainPerceptron(perceptronee3, colors[2]);
+    trainPerceptron(perceptronee4, colors[3]);
+
+  }
+}
+function getColors(numberOfclas) {
+  var colors = new Array(numberOfclas);
+  for (let i = 0, j = 0; i < classes[0].length; i++) {
+    if (classes[1][i]) {
+      colors[j] = j + 1;
+      j++;
+    }
+  }
+  return colors
+}
+function getNumberOfClasses(arrDataPoints) {
+  classes = new Array(2);
+
+  classes[0] = new Array(4);
+  classes[1] = new Array(4).fill(false);
+
+  classes[0][0] = 1;
+  classes[0][1] = 2;
+  classes[0][2] = 3;
+  classes[0][3] = 4;
+
+  var numOfClasses = 0;
+  for (let i = 0; i < arrDataPoints.length; i++) {
+    if (arrDataPoints[i].color == 1)
+      classes[1][0] = true;
+    else if (arrDataPoints[i].color == 2)
+      classes[1][1] = true;
+    else if (arrDataPoints[i].color == 3)
+      classes[1][2] = true;
+    else if (arrDataPoints[i].color == 4)
+      classes[1][3] = true;
+  }
+  for (let i = 0; i < classes[1].length; i++) {
+    if (classes[1][i])
+      numOfClasses++;
+  }
+  return numOfClasses
+}
+function trainPerceptron(perceptron, color1) {
+  var t = 0, bigX = 0, colorToTrain = 0;
+
   for (let i = 0; i < numberOfIterations; i++, t++) {
+    if (allDataPoints[t].color == color1)
+      colorToTrain = 1
+    else colorToTrain = -1;
 
     bigX = (allDataPoints[t].positionX * perceptron.weight1) + (allDataPoints[t].positionY * perceptron.weight2) + perceptron.threshold;
-    console.log("bigX" + bigX);
     perceptron.actualOutput = activate(activationFun, bigX);
-    var errorIteration = allDataPoints[t].color - perceptron.actualOutput;
-    console.log("errorIteration" + errorIteration);
-    console.log("learningRate" + learningRate);
-    console.log("perceptron.weight1" + perceptron.weight1);
+    var errorIteration = colorToTrain - perceptron.actualOutput;
+    SumSSE = SumSSE + Math.pow(errorIteration, 2);
     var deltaWeight1 = learningRate * allDataPoints[t].positionX * errorIteration;
     perceptron.weight1 = deltaWeight1 + perceptron.weight1;
-    var deltaWeight2 = learningRate * allDataPoints[t].positionY  * errorIteration;
+    var deltaWeight2 = learningRate * allDataPoints[t].positionY * errorIteration;
     perceptron.weight2 = deltaWeight2 + perceptron.weight2;
-    console.log("perceptron.actualOutput" + perceptron.actualOutput);
-    y1ForLine = (perceptron.threshold - (perceptron.weight1 * -1)) /perceptron.weight2;
-    y1ForLine = scaleOutput(y1ForLine,0,500)
-    y2ForLine = (perceptron.threshold - (perceptron.weight1 * 1)) /perceptron.weight2;
-    y2ForLine = scaleOutput(y2ForLine,0,500)
+    y1ForLine = (perceptron.threshold - (perceptron.weight1 * -1)) / perceptron.weight2;
+    y1ForLine = scaleOutput(y1ForLine, 0, 500);
+    y2ForLine = (perceptron.threshold - (perceptron.weight1 * 1)) / perceptron.weight2;
+    y2ForLine = scaleOutput(y2ForLine, 0, 500);
     isReady = true;
-    if (t == (allDataPoints.length - 1))
+    if (t == (allDataPoints.length - 1)) {
       t = 0;
+      mMSE=(SumSSE / allDataPoints.length);
+      setMSE(mMSE)
+      console.log("MSE " +mMSE );
+     // getSumSEE(SumSSE / allDataPoints.length );
+      SumSSE = 0;
+    }
   }
-
-  console.log("weight1" + perceptron.weight1);
-  console.log("weight2" + perceptron.weight2);
-
-  console.log("perceptron.threshold" + perceptron.threshold);
+  draw();
 }
-
 function scaleInput(input, min, max) {
-  return ((input - min) * ( (1 - (-1)) / (max - min) ) + -1)
+  return ((input - min) * ((1 - (-1)) / (max - min)) + -1)
 }
 function scaleOutput(output, min, max) {
   return ((output - (-1)) * ((max - min) / (1 - (-1))) + min)
@@ -87,15 +160,33 @@ function setup() {
   canvasHeight = 500;
   var canvas1 = createCanvas(500, 500);
   canvas1.parent('canvasDiv');
-  background(155);
+  background(255);
 }
 
 function draw() {
-  if (isReady) {
+  if (isReady ) {
+    // clear();
+    // background(255);
+
+    for (let i = 0; i < allDataPoints.length; i++) {
+
+      xscaleOutput = scaleOutput(allDataPoints[i].positionX, 0, 500)
+      yscaleOutput = scaleOutput(allDataPoints[i].positionY, 0, 500)
+      if (allDataPoints[i].color == 1)
+        fill(231, 29, 54)
+      else if (allDataPoints[i].color == 2)
+        fill(255, 159, 28)
+      else if (allDataPoints[i].color == 3)
+        fill(46, 196, 182)
+      else if (allDataPoints[i].color == 4)
+        fill(1, 22, 39);
+
+      ellipse(xscaleOutput, yscaleOutput, 5, 5);
+    }
     line(0, y1ForLine, 500, y2ForLine);
   }
-
 }
+
 
 function mouseClicked(event) {
   fill(currentDataColor)
@@ -103,12 +194,16 @@ function mouseClicked(event) {
   //  console.log("mouseX" + mouseX + " mouseY" + mouseY + " color : " + currentDataColor);
   if (mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < canvasHeight) {
     var inputColor
-    if (currentDataColor == "rgb(231, 29, 54)") {
-      inputColor = 1
-      console.log('hiiii')
-    }
+    console.log('currentDataColor' + currentDataColor)
+    if (currentDataColor == "rgb(231, 29, 54)")
+      inputColor = 1;
+    else if (currentDataColor == "rgb(255, 159, 28)")
+      inputColor = 2;
+    else if (currentDataColor == "rgb(46, 196, 182)")
+      inputColor = 3;
+    else if (currentDataColor == "rgb(1, 22, 39)")
+      inputColor = 4;
 
-    else inputColor = -1
     var x = scaleInput(mouseX, 0, 500)
     var y = scaleInput(mouseY, 0, 500)
     var newPoint = new DataPoint(x, y, inputColor);
@@ -141,5 +236,9 @@ function setSSE(sse) {
   SSE = sse;
 }
 
-
-// create a new instance of p5 and pass in the function for sketch 1
+function getMSE() {
+  return mMSE;
+}
+function setMSE(mse) {
+  mMSE = mse;
+}
