@@ -22,21 +22,21 @@ function activate(type, BigX) {
   if (type == "Tanh") {
     return ((2 / (1 + Math.exp(-2 * BigX))) - 1)
   }
-  if (type == "ReLU") {
+  else if (type == "ReLU") {
     if (BigX < 0)
       return 0;
     else {
       return BigX;
     }
   }
-  if (type == "Leaky ReLU") {
+  else if (type == "Leaky ReLU") {
     if (BigX < 0)
       return 0;
     else {
       return 0.01 * BigX;
     }
   }
-  if (type == "Sigmoid") {
+  else if (type == "Sigmoid") {
     return 1 / (1 + Math.exp(-1 * BigX))
   }
 }
@@ -52,13 +52,18 @@ function train() {
     console.log("bigX" + bigX);
     perceptron.actualOutput = activate(activationFun, bigX);
     var errorIteration = allDataPoints[t].color - perceptron.actualOutput;
-    var deltaWeight1 = learningRate * perceptron.weight1 * errorIteration;
+    console.log("errorIteration" + errorIteration);
+    console.log("learningRate" + learningRate);
+    console.log("perceptron.weight1" + perceptron.weight1);
+    var deltaWeight1 = learningRate * allDataPoints[t].positionX * errorIteration;
     perceptron.weight1 = deltaWeight1 + perceptron.weight1;
-    var deltaWeight2 = learningRate * perceptron.weight2 * errorIteration;
+    var deltaWeight2 = learningRate * allDataPoints[t].positionY  * errorIteration;
     perceptron.weight2 = deltaWeight2 + perceptron.weight2;
     console.log("perceptron.actualOutput" + perceptron.actualOutput);
-    y1ForLine = (scaleOutput(perceptron.threshold, 0, 500) - (scaleOutput(perceptron.weight1, 0, 500) * 500)) / scaleOutput(perceptron.weight2, 0, 500);
-    y2ForLine = (scaleOutput(perceptron.threshold, 0, 500) - (scaleOutput(perceptron.weight2, 0, 500) * 0)) / scaleOutput(perceptron.weight2, 0, 500);
+    y1ForLine = (perceptron.threshold - (perceptron.weight1 * -1)) /perceptron.weight2;
+    y1ForLine = scaleOutput(y1ForLine,0,500)
+    y2ForLine = (perceptron.threshold - (perceptron.weight1 * 1)) /perceptron.weight2;
+    y2ForLine = scaleOutput(y2ForLine,0,500)
     isReady = true;
     if (t == (allDataPoints.length - 1))
       t = 0;
@@ -68,11 +73,10 @@ function train() {
   console.log("weight2" + perceptron.weight2);
 
   console.log("perceptron.threshold" + perceptron.threshold);
-
-
 }
+
 function scaleInput(input, min, max) {
-  return ((input - min) * ((1 - (-1)) / (max - min)) + -1)
+  return ((input - min) * ( (1 - (-1)) / (max - min) ) + -1)
 }
 function scaleOutput(output, min, max) {
   return ((output - (-1)) * ((max - min) / (1 - (-1))) + min)
@@ -88,8 +92,7 @@ function setup() {
 
 function draw() {
   if (isReady) {
-    line(0, y1ForLine, 500, y2ForLine)
-
+    line(0, y1ForLine, 500, y2ForLine);
   }
 
 }
@@ -99,13 +102,13 @@ function mouseClicked(event) {
   ellipse(mouseX, mouseY, 5, 5);
   //  console.log("mouseX" + mouseX + " mouseY" + mouseY + " color : " + currentDataColor);
   if (mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < canvasHeight) {
-    var inputColor = 0
+    var inputColor
     if (currentDataColor == "rgb(231, 29, 54)") {
       inputColor = 1
       console.log('hiiii')
     }
 
-    else inputColor = 0
+    else inputColor = -1
     var x = scaleInput(mouseX, 0, 500)
     var y = scaleInput(mouseY, 0, 500)
     var newPoint = new DataPoint(x, y, inputColor);
