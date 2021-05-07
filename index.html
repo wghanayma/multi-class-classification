@@ -11,15 +11,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-    <link href="/your-path-to-fontawesome/css/fontawesome.css" rel="stylesheet">
-    <link href="/your-path-to-fontawesome/css/brands.css" rel="stylesheet">
-    <link href="/your-path-to-fontawesome/css/solid.css" rel="stylesheet">
+
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-
-
     <script src="lib/p5.min.js"></script>
+    <script src="sketch.js"></script>
 
     <style>
         .btn-circle {
@@ -87,7 +84,6 @@
 </head>
 
 <body>
-    <script src="sketch.js"></script>
 
     <div class="container-fluid">
         <div class="row">
@@ -104,8 +100,8 @@
                             </button></div>
 
                         <div class="col-sm-3">
-                            <button type="button" class="btn btn-circle componentColor" onclick="train()" ><i
-                                    class="glyphicon glyphicon-play"  style="color: #ffffff;"></i>
+                            <button type="button" class="btn btn-circle componentColor" onclick="train()"><i
+                                    class="glyphicon glyphicon-play" style="color: #ffffff;"></i>
                             </button>
                         </div>
                     </div>
@@ -119,13 +115,13 @@
                                 </button>
                                 <ul class="dropdown-menu" id="allColors">
                                     <li><a href="#" value="#e71d36" class="colorOption"
-                                            style="color: #ffffff;background-color:#e71d36">.</a></li>
+                                            style="color: #ffffff;background-color:#e71d36">Class 1</a></li>
                                     <li><a href="#" value="#ff9f1c" class="colorOption"
-                                            style="color: #ffffff;background-color:#ff9f1c">. </a></li>
+                                            style="color: #ffffff;background-color:#ff9f1c">Class 2</a></li>
                                     <li><a href="#" value="#2ec4b6" class="colorOption"
-                                            style="color: #ffffff;background-color:#2ec4b6">. </a></li>
+                                            style="color: #ffffff;background-color:#2ec4b6">Class 3</a></li>
                                     <li><a href="#" value="#011627" class="colorOption"
-                                            style="color: #ffffff;background-color:#011627">. </a></li>
+                                            style="color: #ffffff;background-color:#011627">Class 4</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -146,6 +142,7 @@
                                     <li><a href="#" style="color: #011627;background-color:#ff9f1c">ReLU</a></li>
                                     <li><a href="#" style="color: #011627;background-color:#2ec4b6">Leaky ReLU</a></li>
                                     <li><a href="#" style="color: #011627;background-color:#fdfffc">Sigmoid</a></li>
+                                    <li><a href="#" style="color: #011627;background-color:#fdfffc">Linear</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -153,7 +150,7 @@
                     <div class="row mt-4">
                         <div class="col-sm-6">learning rate <span id="learningRateValueDis"></span></div>
                         <div class="col-sm-6 slidecontainer">
-                            <input type="range" min="0.005" max="1" value="0.2" step="0.005" class="slider"
+                            <input type="range" min="0.005" max="0.5" value="0.2" step="0.005" class="slider"
                                 id="learningRateRange"
                                 oninput="updateValue('learningRateRange','learningRateValueDis'); setLearningRate(value);">
                         </div>
@@ -161,18 +158,22 @@
                     <div class="row mt-4">
                         <div class="col-sm-6">Ratio of traning data <span id="traningDataValueDis"></span>%</div>
                         <div class="col-sm-6"><input type="range" min="40" max="90" value="70" step="5" class="slider"
-                                id="traningDataRange" oninput="updateValue('traningDataRange','traningDataValueDis'); setRatioOfTrainingData(value); ">
+                                id="traningDataRange"
+                                oninput="updateValue('traningDataRange','traningDataValueDis'); setRatioOfTrainingData(value); ">
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-sm-6">Max # of iteration <span id="iterationValueDis"></span></div>
-                        <div class="col-sm-6"><input type="range" min="1" max="10000" value="1000" step="1" class="slider"
-                                id="iterationRange" oninput="updateValue('iterationRange','iterationValueDis'); setIterationNumber(value); "></div>
+                        <div class="col-sm-6"><input type="range" min="1" max="100000" value="1000" step="1"
+                                class="slider" id="iterationRange"
+                                oninput="updateValue('iterationRange','iterationValueDis'); setIterationNumber(value); ">
+                        </div>
                     </div>
                     <div class="row mt-4">
-                        <div class="col-sm-6">SSE <span id="SSEValueDis"></span></div>
-                        <div class="col-sm-6"><input type="range" min="0.001" max="0.8" value="0.01" step="0.001"
-                                class="slider" id="SSERange" oninput="updateValue('SSERange','SSEValueDis'); setSSE(value);"></div>
+                        <div class="col-sm-6">MSE <span id="SSEValueDis"></span></div>
+                        <div class="col-sm-6"><input type="range" min="0.000001" max="0.8" value="0.03" step="0.001"
+                                class="slider" id="SSERange"
+                                oninput="updateValue('SSERange','SSEValueDis'); setUserMSE(value);"></div>
                     </div>
                 </div>
             </div>
@@ -195,6 +196,29 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-3" style="font-size: 18px;">Confusion Matrix </div>
+            <div class="col-sm-4" style="font-size: 18px;"></div>
+            <div class="col-sm-5"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2" style="font-size: 16px;">Accuracy : </div>
+            <div class="col-sm-5" id="confusionAccuracy" style="font-size: 16px;">%</div>
+
+            <div class="col-sm-5"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2" style="font-size: 16px;">Misclassification Rate : </div>
+            <div class="col-sm-5" id="misclassificationRate" style="font-size: 16px;">%</div>
+            <div class="col-sm-5"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2" style="font-size: 16px;">Test Mode </div>
+            <div class="col-sm-5" id="testMode" style="font-size: 16px;"></div>
+            <div class="col-sm-5"></div>
+        </div>
+
+
     </div>
 
 </body>
@@ -230,70 +254,21 @@
             setActivationFun(chosenFun);
         });
     });
-    
+
     setColor($('#allColors li a').css("background-color"));
     setActivationFun('Tanh');
     setLearningRate(0.2);
     setRatioOfTrainingData(70);
-    setIterationNumber(70);
+    setIterationNumber(1000);
     setSSE(0.01);
     updateValue('learningRateRange', 'learningRateValueDis');
     updateValue('traningDataRange', 'traningDataValueDis');
     updateValue('iterationRange', 'iterationValueDis');
     updateValue('SSERange', 'SSEValueDis')
-
+    drawPlot();
 </script>
 
 <script>
-    var trace1 = {
-        x: [100, 1, 2, 3, 10, 5, 6, 7, 8],
-        y: [99],
-        type: 'scatter',
-        name: 'Validation',
-
-        fill: 'tozeroy',
-    };
-    var trace2 = {
-        x: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        y: [],
-        name: 'Training ',
-
-        type: 'scatter',
-        fill: 'tozeroy',
-    };
-    var data = [trace1, trace2,];
-    var layout = {
-        autosize: true,
-        width: 470,
-        height: 470,
-        margin: {
-            l: 120,
-            r: 10,
-            b: 100,
-            t: 100,
-            pad: 4
-        },
-        xaxis: {
-            autotick: false,
-            ticks: 'outside',
-            tick0: 0,
-            dtick: 1,
-            ticklen: 4,
-            tickwidth: 1,
-            tickcolor: '#000'
-        },
-        yaxis: {
-            autotick: false,
-            ticks: 'outside',
-            tick0: 0,
-            dtick: 0.5,
-            ticklen: 8,
-            tickwidth: 1,
-            tickcolor: '#000'
-        },
-    };
-
-    Plotly.newPlot('myDiv', data, layout);
 
 </script>
 
