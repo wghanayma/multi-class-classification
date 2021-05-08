@@ -295,12 +295,12 @@ function testCurrentPosition() {
         document.getElementById('testMode').innerHTML = "Class "+colors[perceptronIndex];
       }
       else {
-      var  actualOutputR = Math.round(actualOutput);
+      // var  actualOutputR = Math.round(actualOutput);
         for (let i = 1; i < 5; i++) {
-          if (actualOutputR == 1 && colors[0] == i) {
+          if (actualOutput >= 0.1 && colors[0] == i) {
             document.getElementById('testMode').innerHTML = "Class " + i;
           }
-          else if (actualOutputR == -1 && colors[1] == i) {
+          else if (actualOutput <= -0.1 && colors[1] == i) {
             document.getElementById('testMode').innerHTML = "Class " + i;
           }
         }
