@@ -168,7 +168,7 @@
                     </div>
                     <div class="row mt-4">
                         <div class="col-sm-6">MSE <span id="SSEValueDis"></span></div>
-                        <div class="col-sm-6"><input type="range" min="0.000001" max="0.8" value="0.03" step="0.001"
+                        <div class="col-sm-6"><input type="range" min="0.000001" max="0.8" value="0.00003" step="0.001"
                                 class="slider" id="SSERange"
                                 oninput="updateValue('SSERange','SSEValueDis'); setUserMSE(value);"></div>
                     </div>
@@ -257,7 +257,7 @@
     setLearningRate(0.2);
     setRatioOfTrainingData(70);
     setIterationNumber(1000);
-    setSSE(0.01);
+    setUserMSE(0.00003);
     updateValue('learningRateRange', 'learningRateValueDis');
     updateValue('traningDataRange', 'traningDataValueDis');
     updateValue('iterationRange', 'iterationValueDis');
