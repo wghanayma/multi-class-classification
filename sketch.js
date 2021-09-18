@@ -166,7 +166,7 @@ function getNumberOfClasses(arrDataPoints) {
 }
 function trainPerceptron(perceptron, color1) {
   // console.log(perceptron)
-  
+  var mMSE = 0;
   var t = 0, i, bigX = 0, colorToTrain = 0, SumSSE = 0, epochNum = 0;
   var arrEpoch = new Array(), arrOFMSE = new Array(), mSEValidation = new Array(),arrEpochValidation = new Array();
   for (i = 0; i < numberOfIterations; i++, t++)/* while(true)*/ {
@@ -186,17 +186,21 @@ function trainPerceptron(perceptron, color1) {
     var deltaWeight2 = learningRate * allDataPoints[t].positionY * errorIteration;
     perceptron.weight2 = deltaWeight2 + perceptron.weight2;
     y1ForLine = (perceptron.threshold - (perceptron.weight1 * -1)) / perceptron.weight2;
+    // console.log("before y1: "+y1ForLine);
     y1ForLine = scaleOutput(y1ForLine, 0, 500);
+    // console.log("after y1: "+y1ForLine);
     y2ForLine = (perceptron.threshold - (perceptron.weight1 * 1)) / perceptron.weight2;
+    // console.log("before y2: "+y2ForLine);
     y2ForLine = scaleOutput(y2ForLine, 0, 500);
+    // console.log("after y2: "+y2ForLine);
     isReady = true;
-    if (t == (allDataPoints.length - 1)) {
+    if (t == (allDataPoints.length - 1))     {
       t = -1;
       epochNum++;
       arrEpoch.push(epochNum);
-      var mMSE = (SumSSE / allDataPoints.length);
+      mMSE = (SumSSE / allDataPoints.length);
       arrOFMSE.push(mMSE);
-      if((epochNum%5) == 0){
+      if((epochNum%2) == 0){
         var sumSSEValidation = 0;
         for(let i = 0; i < validationArr.length; i++){
           if (validationArr[i].color == color1) {
@@ -215,8 +219,10 @@ function trainPerceptron(perceptron, color1) {
         arrEpochValidation.push(epochNum);
       }
       drawPlot(arrEpoch, arrOFMSE, arrEpochValidation, mSEValidation);
+      console.log("M S E "+mMSE);
       if (mMSE < usermMSE) {
         // console.log("mMSE < usermMSE"); 
+        window.alert("Training ends because MSE is less than"+usermMSE);
         break;
       }
       //  console.log("MSE " +mMSE );
