@@ -6,6 +6,7 @@ var currentDataColor, canvasWidth, canvasHeight, y1ForLine = 0, y2ForLine = 0, i
 function getRnd(min, max) {
   return (((max - min) * Math.random()) + min);
 }
+
 function DataPoint(posX, posY, col) {
   this.positionX = posX;
   this.positionY = posY;
